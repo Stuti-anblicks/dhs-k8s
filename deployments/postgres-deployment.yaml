@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: data-harmony
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+    spec:
+     containers:
+       - name: postgres
+         image: postgres:14.0
+         ports:
+           - containerPort: 5432
+         env:
+           - name: POSTGRES_USER
+             value: airflow
+           - name: POSTGRES_PASSWORD
+             value: airflow
+           - name: POSTGRES_DB
+             value: airflow
+         volumeMounts:
+           - name: pgdata
+             mountPath: /var/lib/postgresql/data
+     volumes:
+      - name: pgdata
+        persistentVolumeClaim:
+           claimName: pgdata-pvc

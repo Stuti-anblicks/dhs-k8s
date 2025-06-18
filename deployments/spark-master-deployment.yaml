@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+  namespace: data-harmony
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-master
+  template:
+    metadata:
+      labels:
+        app: spark-master
+    spec:
+      containers:
+        - name: spark-master
+          image: docker.io/bitnami/spark:3.4.1
+          command: ["/opt/bitnami/spark/bin/spark-class"]
+          args: ["org.apache.spark.deploy.master.Master"]
+          ports:
+            - containerPort: 7077
+            - containerPort: 8080
+          env:
+            - name: SPARK_DRIVER_MEMORY
+              value: 4g
+            - name: SPARK_HOME
+              value: /opt/bitnami/spark
+          volumeMounts:
+            - name: spark-jobs
+              mountPath: /opt/bitnami/spark/jobs
+            - name: spark-engine
+              mountPath: /opt/bitnami/spark/jobs/python/dataflow-genie
+            - name: spark-data
+              mountPath: /opt/bitnami/data
+
+      volumes:
+        - name: spark-jobs
+          persistentVolumeClaim:
+            claimName: spark-jobs-pvc
+        - name: spark-engine
+          persistentVolumeClaim:
+            claimName: spark-engine-pvc
+        - name: spark-data
+          persistentVolumeClaim:
+            claimName: spark-data-pvc
