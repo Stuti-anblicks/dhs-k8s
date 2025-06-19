@@ -27,6 +27,6 @@ spec:
             - name: mongodb_data_container
               mountPath: /data/db
       volumes:
-       - name: mongodb_data_container
+       - name: mongodb
          persistentVolumeClaim:
-           claimName: mongodb_data-container-pvc
+           claimName: mongodb-pvc
