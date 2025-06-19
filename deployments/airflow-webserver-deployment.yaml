@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: airflow-webserver
+  namespace: data-harmony
   labels:
     app: airflow
     component: webserver
